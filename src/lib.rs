@@ -12,6 +12,16 @@ struct DMS {
   s: i32
 }
 
+impl DMS {
+  fn to_decimal(&self) -> f64 {
+    let dd = self.d as f64;
+    let mm = self.m as f64;
+    let ss = self.s as f64;
+    dd + mm/60.0 + ss/3600.0
+  }
+}
+
+
 // represents a location in Degrees, Minutes, Seconds format
 struct LocationDMS {
   lat: DMS,
@@ -36,6 +46,10 @@ impl ToString for LocationDecimal {
   }
 }
 
+//fn convert_to_decimal(l: &LocationDMS) -> LocationDecimal {
+//  //TODO: complete this
+//  LocationDecimal { lat: DMS { d: l.lat.trunc(), m: 0, s: 0} , lon: DMS { d: l.lon.trunc(), m: 0, s: 0 } }
+//}
 
 #[test]
 fn it_works() {
