@@ -69,7 +69,11 @@ fn it_works() {
 
   assert_eq!("39.8617, -104.6731", dia.to_string());
 
+}
+
+#[test]
+fn convert_dms_to_decimal() {
   let diaDMS = LocationDMS { lat: DMS { d: 39, m: 51, s: 42 }, lon: DMS { d: -104, m: 40, s: 22 } };
   assert_eq!("39.861666666666665, -103.32722222222222", diaDMS.to_decimal().to_string());
-
 }
+
