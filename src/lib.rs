@@ -1,10 +1,25 @@
 
-struct Location {
+// represents a location in decimal degrees format
+struct LocationDecimal {
   lat: f64,
   lon: f64
 }
 
-impl ToString for Location {
+// Degrees, Minutes, Seconds
+struct DMS {
+  d: i32,
+  m: i32,
+  s: i32
+}
+
+// represents a location in Degrees, Minutes, Seconds format
+struct LocationDMS {
+  lat: DMS,
+  lon: DMS
+}
+
+
+impl ToString for LocationDecimal {
   fn to_string(&self) -> String {
     format!("{}, {}", self.lat, self.lon)
   }
@@ -15,10 +30,10 @@ impl ToString for Location {
 fn it_works() {
 
   // 39.8617° N, 104.6731° W
-  let dia = Location { lat: 39.8617, lon: -104.6731 };
+  let dia = LocationDecimal { lat: 39.8617, lon: -104.6731 };
 
   // 40.0274° N, 105.2519° W
-  let boulder = Location { lat: 40.0274, lon: -105.2519 };
+  let boulder = LocationDecimal { lat: 40.0274, lon: -105.2519 };
 
   println!("DIA is at {}", dia.to_string());
 }
