@@ -18,6 +18,17 @@ struct LocationDMS {
   lon: DMS
 }
 
+impl ToString for DMS {
+  fn to_string(&self) -> String {
+    format!("{}° {}' {}\"", self.d, self.m, self.s)
+  }
+}
+
+impl ToString for LocationDMS {
+  fn to_string(&self) -> String {
+    format!("{}, {}", self.lat.to_string(), self.lon.to_string())
+  }
+}
 
 impl ToString for LocationDecimal {
   fn to_string(&self) -> String {
