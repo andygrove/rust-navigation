@@ -60,5 +60,5 @@ fn it_works() {
   // 40.0274° N, 105.2519° W
   let boulder = LocationDecimal { lat: 40.0274, lon: -105.2519 };
 
-  println!("DIA is at {}", dia.to_string());
+  assert_eq!("39.8617, -104.6731", dia.to_string());
 }
