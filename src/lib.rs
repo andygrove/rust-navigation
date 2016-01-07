@@ -14,10 +14,14 @@ struct DMS {
 
 impl DMS {
   fn to_decimal(&self) -> f64 {
-    let dd = self.d as f64;
+    let dd = (self.d as f64).abs();
     let mm = self.m as f64;
     let ss = self.s as f64;
-    dd + mm/60.0 + ss/3600.0
+    let mut ret = dd + mm/60.0 + ss/3600.0;
+    if ((self.d as f64) < (0 as f64)) {
+      ret = (0 as f64) - ret;
+    }
+    ret
   }
 }
 
@@ -74,6 +78,6 @@ fn it_works() {
 #[test]
 fn convert_dms_to_decimal() {
   let diaDMS = LocationDMS { lat: DMS { d: 39, m: 51, s: 42 }, lon: DMS { d: -104, m: 40, s: 22 } };
-  assert_eq!("39.861666666666665, -103.32722222222222", diaDMS.to_decimal().to_string());
+  assert_eq!("39.861666666666665, -104.67277777777778", diaDMS.to_decimal().to_string());
 }
 
