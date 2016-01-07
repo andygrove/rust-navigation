@@ -28,6 +28,13 @@ struct LocationDMS {
   lon: DMS
 }
 
+impl LocationDMS {
+  fn to_decimal(&self) -> LocationDecimal {
+    LocationDecimal { lat: self.lat.to_decimal(), lon: self.lon.to_decimal() }
+  }
+}
+
+
 impl ToString for DMS {
   fn to_string(&self) -> String {
     format!("{}° {}' {}\"", self.d, self.m, self.s)
@@ -61,4 +68,8 @@ fn it_works() {
   let boulder = LocationDecimal { lat: 40.0274, lon: -105.2519 };
 
   assert_eq!("39.8617, -104.6731", dia.to_string());
+
+  let diaDMS = LocationDMS { lat: DMS { d: 39, m: 51, s: 42 }, lon: DMS { d: -104, m: 40, s: 22 } };
+  assert_eq!("39.861666666666665, -103.32722222222222", diaDMS.to_decimal().to_string());
+
 }
