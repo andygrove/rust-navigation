@@ -1,9 +1,41 @@
+const PI: f64 = 3.141592;
+
 
 // represents a location in decimal degrees format
 struct LocationDecimal {
   lat: f64,
   lon: f64
 }
+
+fn radians(n: f64) -> f64 {
+    n * (PI / 180.0)
+}
+
+fn degrees(n: f64) -> f64 {
+    n * (180.0 / PI)
+}
+
+// Calculate the required compass bearing to get from a to b
+fn calculate_bearing(a: LocationDecimal, b: LocationDecimal) -> f64 {
+    let startLat = radians(a.lat);
+    let startLong = radians(a.lon);
+    let endLat = radians(b.lat);
+    let endLong = radians(b.lon);
+    let mut dLong = endLong - startLong;
+
+    let dPhi = ((endLat/2.0+PI/4.0).tan()/(startLat/2.0+PI/4.0).tan()).ln();
+
+    if (dLong.abs() > PI){
+      if (dLong > 0.0) {
+         dLong = -(2.0 * PI - dLong);
+     } else {
+         dLong = (2.0 * PI + dLong);
+     }
+    }
+
+    return (degrees(dLong.atan2(dPhi)) + 360.0) % 360.0;
+}
+
 
 // Degrees, Minutes, Seconds
 struct DMS {
@@ -63,7 +95,7 @@ impl ToString for LocationDecimal {
 //}
 
 #[test]
-fn it_works() {
+fn calc_bearing_boulder_to_dia() {
 
   // 39.8617° N, 104.6731° W
   let dia = LocationDecimal { lat: 39.8617, lon: -104.6731 };
@@ -71,7 +103,7 @@ fn it_works() {
   // 40.0274° N, 105.2519° W
   let boulder = LocationDecimal { lat: 40.0274, lon: -105.2519 };
 
-  assert_eq!("39.8617, -104.6731", dia.to_string());
+  assert_eq!(110.47624147690016, calculate_bearing(boulder, dia));
 
 }
 
@@ -80,4 +112,3 @@ fn convert_dms_to_decimal() {
   let diaDMS = LocationDMS { lat: DMS { d: 39, m: 51, s: 42 }, lon: DMS { d: -104, m: 40, s: 22 } };
   assert_eq!("39.861666666666665, -104.67277777777778", diaDMS.to_decimal().to_string());
 }
-
