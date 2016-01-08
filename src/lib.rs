@@ -9,41 +9,6 @@ struct Location {
   lon: f64
 }
 
-impl Location {
-
-    fn new(_lat: f64, _lon: f64) -> Location {
-        Location { lat: _lat, lon: _lon }
-    }
-
-    fn calc_bearing_to(&self, dest: &Location) -> f64 {
-        let start_lat = radians(self.lat);
-        let start_long = radians(self.lon);
-        let dest_lat = radians(dest.lat);
-        let dest_long = radians(dest.lon);
-        let mut delta_long = dest_long - start_long;
-
-        let delta_phi = ((dest_lat/2.0+PI/4.0).tan()/(start_lat/2.0+PI/4.0).tan()).ln();
-
-        if (delta_long.abs() > PI) {
-          if (delta_long > 0.0) {
-             delta_long = -(2.0 * PI - delta_long);
-         } else {
-             delta_long = (2.0 * PI + delta_long);
-         }
-        }
-
-        return (degrees(delta_long.atan2(delta_phi)) + 360.0) % 360.0;
-    }
-}
-
-fn radians(n: f64) -> f64 {
-    n * (PI / 180.0)
-}
-
-fn degrees(n: f64) -> f64 {
-    n * (180.0 / PI)
-}
-
 // Degrees, Minutes, Seconds
 struct DMS {
   d: i32,
@@ -64,30 +29,38 @@ impl DMS {
   }
 }
 
-
-// represents a location in Degrees, Minutes, Seconds format
-struct LocationDMS {
-  lat: DMS,
-  lon: DMS
-}
-
-impl LocationDMS {
-  fn to_decimal(&self) -> Location {
-    Location { lat: self.lat.to_decimal(), lon: self.lon.to_decimal() }
-  }
-}
-
-
 impl ToString for DMS {
   fn to_string(&self) -> String {
     format!("{}° {}' {}\"", self.d, self.m, self.s)
   }
 }
 
-impl ToString for LocationDMS {
-  fn to_string(&self) -> String {
-    format!("{}, {}", self.lat.to_string(), self.lon.to_string())
-  }
+impl Location {
+
+    // construct a new location from decimal degrees
+    fn new(_lat: f64, _lon: f64) -> Location {
+        Location { lat: _lat, lon: _lon }
+    }
+
+    fn calc_bearing_to(&self, dest: &Location) -> f64 {
+        let start_lat = radians(self.lat);
+        let start_long = radians(self.lon);
+        let dest_lat = radians(dest.lat);
+        let dest_long = radians(dest.lon);
+        let mut delta_long = dest_long - start_long;
+
+        let delta_phi = ((dest_lat/2.0+PI/4.0).tan()/(start_lat/2.0+PI/4.0).tan()).ln();
+
+        if delta_long.abs() > PI {
+          if delta_long > 0.0 {
+             delta_long = -(2.0 * PI - delta_long);
+         } else {
+             delta_long = (2.0 * PI + delta_long);
+         }
+        }
+
+        return (degrees(delta_long.atan2(delta_phi)) + 360.0) % 360.0;
+    }
 }
 
 impl ToString for Location {
@@ -96,14 +69,22 @@ impl ToString for Location {
   }
 }
 
+fn radians(n: f64) -> f64 {
+    n * (PI / 180.0)
+}
+
+fn degrees(n: f64) -> f64 {
+    n * (180.0 / PI)
+}
+
 #[test]
 fn calc_bearing_boulder_to_dia() {
 
   // 39.8617° N, 104.6731° W
-  let dia = Location { lat: 39.8617, lon: -104.6731 };
+  let dia = Location::new(39.8617, -104.6731);
 
   // 40.0274° N, 105.2519° W
-  let boulder = Location { lat: 40.0274, lon: -105.2519 };
+  let boulder = Location::new(40.0274, -105.2519);
 
   assert_eq!("110.48", format!("{:.*}", 2, boulder.calc_bearing_to(&dia)));
 
@@ -111,8 +92,12 @@ fn calc_bearing_boulder_to_dia() {
 
 #[test]
 fn convert_dms_to_decimal() {
-  let dia = LocationDMS { lat: DMS { d: 39, m: 51, s: 42 }, lon: DMS { d: -104, m: 40, s: 22 } };
-  assert_eq!("39.861666666666665, -104.67277777777778", dia.to_decimal().to_string());
+  let dia = Location::new(
+      DMS { d: 39, m: 51, s: 42 }.to_decimal(),
+      DMS { d: -104, m: 40, s: 22 }.to_decimal()
+  );
+
+  assert_eq!("39.861666666666665, -104.67277777777778", dia.to_string());
 }
 
 #[test]
