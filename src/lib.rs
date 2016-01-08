@@ -17,7 +17,7 @@ struct DMS {
 }
 
 impl DMS {
-  fn to_decimal(&self) -> f64 {
+  pub fn to_decimal(&self) -> f64 {
     let dd = (self.d as f64).abs();
     let mm = self.m as f64;
     let ss = self.s as f64;
@@ -38,11 +38,11 @@ impl ToString for DMS {
 impl Location {
 
     // construct a new location from decimal degrees
-    fn new(_lat: f64, _lon: f64) -> Location {
+    pub fn new(_lat: f64, _lon: f64) -> Location {
         Location { lat: _lat, lon: _lon }
     }
 
-    fn calc_bearing_to(&self, dest: &Location) -> f64 {
+    pub fn calc_bearing_to(&self, dest: &Location) -> f64 {
         let start_lat = radians(self.lat);
         let start_long = radians(self.lon);
         let dest_lat = radians(dest.lat);
