@@ -4,7 +4,9 @@
 
 This is a very simple navigation crate intended for use with autonomous vehicles. It simply provides a way to calculate the required bearing to navigate between two waypoints based on latitude and longtitude.
 
-## Example: Which direction should I get to get to Denver International Airport from Boulder, CO?
+## Example
+
+Which direction should I go to get to Denver International Airport from Boulder, CO?
 
 ```
 let dia = Location::new(39.8617, -104.6731);
