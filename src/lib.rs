@@ -9,6 +9,33 @@ struct Location {
   lon: f64
 }
 
+impl Location {
+
+    fn new(_lat: f64, _lon: f64) -> Location {
+        Location { lat: _lat, lon: _lon }
+    }
+
+    fn calc_bearing_to(&self, dest: &Location) -> f64 {
+        let start_lat = radians(self.lat);
+        let start_long = radians(self.lon);
+        let dest_lat = radians(dest.lat);
+        let dest_long = radians(dest.lon);
+        let mut delta_long = dest_long - start_long;
+
+        let delta_phi = ((dest_lat/2.0+PI/4.0).tan()/(start_lat/2.0+PI/4.0).tan()).ln();
+
+        if (delta_long.abs() > PI) {
+          if (delta_long > 0.0) {
+             delta_long = -(2.0 * PI - delta_long);
+         } else {
+             delta_long = (2.0 * PI + delta_long);
+         }
+        }
+
+        return (degrees(delta_long.atan2(delta_phi)) + 360.0) % 360.0;
+    }
+}
+
 fn radians(n: f64) -> f64 {
     n * (PI / 180.0)
 }
@@ -16,28 +43,6 @@ fn radians(n: f64) -> f64 {
 fn degrees(n: f64) -> f64 {
     n * (180.0 / PI)
 }
-
-// Calculate the required compass bearing to get from a to b
-fn calculate_bearing(a: &Location, b: &Location) -> f64 {
-    let startLat = radians(a.lat);
-    let startLong = radians(a.lon);
-    let endLat = radians(b.lat);
-    let endLong = radians(b.lon);
-    let mut dLong = endLong - startLong;
-
-    let dPhi = ((endLat/2.0+PI/4.0).tan()/(startLat/2.0+PI/4.0).tan()).ln();
-
-    if (dLong.abs() > PI){
-      if (dLong > 0.0) {
-         dLong = -(2.0 * PI - dLong);
-     } else {
-         dLong = (2.0 * PI + dLong);
-     }
-    }
-
-    return (degrees(dLong.atan2(dPhi)) + 360.0) % 360.0;
-}
-
 
 // Degrees, Minutes, Seconds
 struct DMS {
@@ -91,15 +96,6 @@ impl ToString for Location {
   }
 }
 
-//fn convert_to_decimal(l: &LocationDMS) -> LocationDecimal {
-//  //TODO: complete this
-//  LocationDecimal { lat: DMS { d: l.lat.trunc(), m: 0, s: 0} , lon: DMS { d: l.lon.trunc(), m: 0, s: 0 } }
-//}
-
-fn loc(_lat: f64, _lon: f64) -> Location {
-    Location { lat: _lat, lon: _lon }
-}
-
 #[test]
 fn calc_bearing_boulder_to_dia() {
 
@@ -109,7 +105,7 @@ fn calc_bearing_boulder_to_dia() {
   // 40.0274° N, 105.2519° W
   let boulder = Location { lat: 40.0274, lon: -105.2519 };
 
-  assert_eq!(110.47624147690016, calculate_bearing(&boulder, &dia));
+  assert_eq!("110.48", format!("{:.*}", 2, boulder.calc_bearing_to(&dia)));
 
 }
 
@@ -122,13 +118,13 @@ fn convert_dms_to_decimal() {
 #[test]
 fn test_sparkfun_route() {
 
-    let mut route: Vec<Location> = vec![];
-    route.push(Location { lat: 40.0906963, lon: -105.185844 } );
-    route.push(Location { lat: 40.0908317, lon: -105.185734 } );
-    route.push(Location { lat: 40.0910061, lon: -105.1855154 } );
+    let mut route: Vec<Location> = Vec::new();
+    route.push(Location::new(40.0906963, -105.185844));
+    route.push(Location::new(40.0908317, -105.185734));
+    route.push(Location::new(40.0910061, -105.1855154));
 
     //TODO: need to confirm that these bearings are actually correct
-    assert_eq!("31.86", format!("{:.*}", 2, calculate_bearing(&route[0], &route[1])));
-    assert_eq!("43.80", format!("{:.*}", 2, calculate_bearing(&route[1], &route[2])));
+    assert_eq!("31.86", format!("{:.*}", 2, &route[0].calc_bearing_to(&route[1])));
+    assert_eq!("43.80", format!("{:.*}", 2, &route[1].calc_bearing_to(&route[2])));
 
 }
