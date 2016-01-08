@@ -5,8 +5,8 @@ const PI: f64 = 3.141592;
 
 // represents a location in decimal degrees format
 pub struct Location {
-  lat: f64,
-  lon: f64
+  pub lat: f64,
+  pub lon: f64
 }
 
 // Degrees, Minutes, Seconds
