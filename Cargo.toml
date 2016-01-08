@@ -1,4 +1,9 @@
 [package]
 name = "navigation"
+description = "Provides basic navigation between GPS waypoints"
 version = "0.1.0"
 authors = ["Andy Grove <andygrove73@gmail.com>"]
+homepage = "https://github.com/andygrove/rust-navigation"
+documentation = "https://github.com/andygrove/rust-navigation"
+repository = "https://github.com/andygrove/rust-navigation"
+license = "MIT/Apache-2.0"
