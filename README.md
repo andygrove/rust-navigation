@@ -13,5 +13,15 @@ Which direction should I go to get to Denver International Airport from Boulder,
 ```
 let dia = Location::new(39.8617, -104.6731);
 let boulder = Location::new(40.0274, -105.2519);
+
+### Accurate calculation
+
+```
 let bearing = boulder.calc_bearing_to(&dia);
+```
+
+### Fast calculation
+
+```
+let bearing = boulder.estimate_bearing_to(&dia);
 ```
