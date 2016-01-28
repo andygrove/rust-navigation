@@ -11,8 +11,9 @@ Two methods are provided - an accurate algorithm and a faster estimation method 
 Which direction should I go to get to Denver International Airport from Boulder, CO?
 
 ```
-let dia = Location::new(39.8617, -104.6731);
+let dia     = Location::new(39.8617, -104.6731);
 let boulder = Location::new(40.0274, -105.2519);
+```
 
 ### Accurate calculation
 
@@ -24,4 +25,14 @@ let bearing = boulder.calc_bearing_to(&dia);
 
 ```
 let bearing = boulder.estimate_bearing_to(&dia);
+```
+
+### Sample output from unit test comparing the two methods
+
+```
+(40.091306, -105.185494) -> (40.090405, -105.185087): bearing=160.9 estimate=160.9 diff=0.1 [OK]
+(40.090801, -105.185641) -> (40.091439, -105.184771): bearing= 46.2 estimate= 46.3 diff=0.1 [OK]
+(40.090960, -105.185871) -> (40.090342, -105.184860): bearing=128.6 estimate=128.5 diff=0.1 [OK]
+(40.091311, -105.185128) -> (40.090946, -105.184925): bearing=157.0 estimate=156.9 diff=0.1 [OK]
+(40.091150, -105.185586) -> (40.091221, -105.185793): bearing=294.2 estimate=294.1 diff=0.1 [OK]
 ```
