@@ -7,3 +7,6 @@ homepage = "https://github.com/andygrove/rust-navigation"
 documentation = "https://github.com/andygrove/rust-navigation"
 repository = "https://github.com/andygrove/rust-navigation"
 license = "MIT/Apache-2.0"
+
+[dependencies]
+rand = "0.3.13"
