@@ -157,7 +157,7 @@ fn test_estimation_accuracy() {
         }
     }
 
-    assert!(!ok);
+    assert!(ok);
 
     /*
     (40.091364, -105.185574) -> (40.091228, -105.184837): bearing=103.5 estimate=103.5 diff=0.1 [OK] //103°33′40″
