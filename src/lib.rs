@@ -182,7 +182,7 @@ fn calc_bearing_boulder_to_dia() {
   let boulder = Location::new(40.0274, -105.2519);
 
   assert_eq!("110.48", format!("{:.*}", 2, boulder.calc_bearing_to(&dia)));
-  //assert_eq!("110.48", format!("{:.*}", 2, boulder.estimate_bearing_to(&dia, 53.0, 69.0)));
+  assert_eq!("110.44", format!("{:.*}", 2, boulder.estimate_bearing_to(&dia, 69.0, 53.0)));
 
 }
 

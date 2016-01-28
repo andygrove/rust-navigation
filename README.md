@@ -18,13 +18,13 @@ let boulder = Location::new(40.0274, -105.2519);
 ### Accurate calculation
 
 ```
-let bearing = boulder.calc_bearing_to(&dia);
+let bearing = boulder.calc_bearing_to(&dia); // results in 110.48
 ```
 
 ### Fast calculation
 
 ```
-let bearing = boulder.estimate_bearing_to(&dia);
+let bearing = boulder.estimate_bearing_to(&dia); // results in 110.44
 ```
 
 ### Sample output from unit test comparing the two methods
