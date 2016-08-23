@@ -1,5 +1,3 @@
-use std::vec::Vec;
-
 extern crate rand;
 
 const PI: f64 = 3.141592;
@@ -25,7 +23,7 @@ impl DMS {
     let mm = self.m as f64;
     let ss = self.s as f64;
     let mut ret = dd + mm/60.0 + ss/3600.0;
-    if ((self.d as f64) < (0 as f64)) {
+    if (self.d as f64) < (0 as f64) {
       ret = (0 as f64) - ret;
     }
     ret
@@ -63,7 +61,7 @@ impl Location {
           if delta_long > 0.0 {
              delta_long = -(2.0 * PI - delta_long);
          } else {
-             delta_long = (2.0 * PI + delta_long);
+             delta_long = 2.0 * PI + delta_long;
          }
         }
 
@@ -80,22 +78,22 @@ impl Location {
         let ax = lon_delta.abs();
         let ay = lat_delta.abs();
 
-        let angle: f64 = 180.0 / 3.141592 * (if (ax>ay) { (ay/ax).atan() } else { (ax/ay).atan() });
+        let angle: f64 = 180.0 / 3.141592 * if ax>ay { (ay/ax).atan() } else { (ax/ay).atan() };
 
         //println!("angle = {}", angle);
 
         let bearing: f64 =
-            if (lon_delta > 0.0) {
-                if (lat_delta > 0.0) {
-                    if (ax>ay) { 90.0-angle } else { angle }
+            if lon_delta > 0.0 {
+                if lat_delta > 0.0 {
+                    if ax>ay { 90.0-angle } else { angle }
                 } else {
-                    if (ax>ay) { 90.0+angle } else { 180.0-angle }
+                    if ax>ay { 90.0+angle } else { 180.0-angle }
                 }
             } else {
-                if (lat_delta > 0.0) {
-                    if (ax>ay) { 270.0+angle } else { 360.0-angle }
+                if lat_delta > 0.0 {
+                    if ax>ay { 270.0+angle } else { 360.0-angle }
                 } else {
-                    if (ax>ay) { 270.0-angle } else { 180.0+angle }
+                    if ax>ay { 270.0-angle } else { 180.0+angle }
                 }
             };
 
