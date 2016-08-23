@@ -45,6 +45,11 @@ impl Location {
         Location { lat: _lat, lon: _lon }
     }
 
+    pub fn set(&mut self, lat: f64, lon: f64) {
+        self.lat = lat;
+        self.lon = lon;
+    }
+
     pub fn calc_bearing_to(&self, dest: &Location) -> f64 {
         let start_lat = radians(self.lat);
         let start_long = radians(self.lon);
