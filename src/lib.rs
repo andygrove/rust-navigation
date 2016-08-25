@@ -2,6 +2,12 @@ extern crate rand;
 
 const PI: f64 = 3.141592;
 
+/// parses an NMEA string (degrees decimal minutes) such as "3953.4210" into (39, 53.4210) and
+/// then to 39 + 53.4210/60
+pub fn parse_nmea(s: &str) -> f64 {
+    let n: f64 = String::from(s).parse().unwrap();
+    ((n/100_f64) as u32) as f64 + ((n%100_f64)/60_f64)
+}
 
 // represents a location in decimal degrees format
 #[derive(Debug)]
@@ -9,6 +15,26 @@ pub struct Location {
   pub lat: f64,
   pub lon: f64
 }
+
+impl Location {
+
+    pub fn parse_nmea(lat: &str, lat_dir: &str, lon: &str, lon_dir: &str) -> Self {
+        Location {
+            lat: parse_nmea(lat) * match lat_dir {
+                "N" => 1_f64,
+                "S" => -1_f64,
+                _ => panic!("Invalid latitude direction")
+            },
+            lon: parse_nmea(lon) * match lon_dir {
+                "E" => 1_f64,
+                "W" => -1_f64,
+                _ => panic!("Invalid longitude direction")
+            }
+        }
+    }
+
+}
+
 
 // Degrees, Minutes, Seconds
 pub struct DMS {
@@ -125,7 +151,7 @@ fn test_estimation_accuracy() {
 
     let mut ok = true;
 
-    for x in 0..100000 {
+    for _ in 0..100000 {
 
         // create two random points on map
         let l1 = Location::new(
@@ -151,10 +177,10 @@ fn test_estimation_accuracy() {
             format!("{:.*}", 1, bearing),
             format!("{:.*}", 1, estimate),
             format!("{:.*}", 1, diff),
-            if (diff < 1.0) { "OK" } else { "FAIL" }
+            if diff < 1.0 { "OK" } else { "FAIL" }
         );
 
-        if (diff > 1.0) {
+        if diff > 1.0 {
             ok = false;
             break;
         }
@@ -223,4 +249,9 @@ fn test_sparkfun_route_2() {
     //TODO: need to confirm that these bearings are actually correct
     assert_eq!("41.40", format!("{:.*}", 2, &route[0].calc_bearing_to(&route[1])));
 
+}
+
+#[test]
+fn test_parse_nmea() {
+    assert_eq!("101.6971", format!("{:.*}", 4, parse_nmea("10141.82531")));
 }
