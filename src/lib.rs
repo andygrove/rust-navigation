@@ -6,8 +6,8 @@ const PI: f64 = 3.141592;
 /// then to 39 + 53.4210/60
 pub fn parse_nmea(s: &str) -> Result<f64, String> {
     match String::from(s).parse::<f64>() {
-        Ok(n)  => Ok(((n / 100_f64) as u32) as f64 + ((n % 100_f64) / 60_f64)),
-        Err(e) => Err(format!("Failed to parse: {}", e))
+        Ok(n) => Ok(((n / 100_f64) as u32) as f64 + ((n % 100_f64) / 60_f64)),
+        Err(e) => Err(format!("Failed to parse: {}", e)),
     }
 }
 
@@ -16,7 +16,7 @@ pub enum Direction {
     North,
     South,
     East,
-    West
+    West,
 }
 
 // represents a location in decimal degrees format
@@ -27,14 +27,13 @@ pub struct Location {
 }
 
 impl Location {
-
     pub fn parse_nmea(lat: &str, lat_dir: &str, lon: &str, lon_dir: &str) -> Result<Self, String> {
 
         let lat_dir = try!(Location::parse_direction(lat_dir));
         let lat_mult = try!(match lat_dir {
             Direction::North => Ok(1_f64),
             Direction::South => Ok(-1_f64),
-            _ => Err(format!("Invalid latitude direction {:?}", lat_dir))
+            _ => Err(format!("Invalid latitude direction {:?}", lat_dir)),
         });
         let lat = try!(parse_nmea(lat)) * lat_mult;
 
@@ -42,11 +41,14 @@ impl Location {
         let lon_mult = try!(match lon_dir {
             Direction::East => Ok(1_f64),
             Direction::West => Ok(-1_f64),
-            _ => Err(format!("Invalid longitude direction {:?}", lon_dir))
+            _ => Err(format!("Invalid longitude direction {:?}", lon_dir)),
         });
         let lon = try!(parse_nmea(lon)) * lon_mult;
 
-        Ok(Location { lat: lat, lon: lon })
+        Ok(Location {
+            lat: lat,
+            lon: lon,
+        })
     }
 
     pub fn parse_direction(d: &str) -> Result<Direction, String> {
@@ -55,7 +57,7 @@ impl Location {
             "S" => Ok(Direction::South),
             "E" => Ok(Direction::East),
             "W" => Ok(Direction::West),
-            _ => Err(format!("Invalid direction '{}'", d))
+            _ => Err(format!("Invalid direction '{}'", d)),
         }
     }
 }
@@ -290,5 +292,6 @@ fn test_sparkfun_route_2() {
 
 #[test]
 fn test_parse_nmea() {
-    assert_eq!("101.6971", format!("{:.*}", 4, parse_nmea("10141.82531").unwrap()));
+    assert_eq!("101.6971",
+               format!("{:.*}", 4, parse_nmea("10141.82531").unwrap()));
 }
