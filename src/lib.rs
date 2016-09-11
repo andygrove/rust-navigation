@@ -4,9 +4,19 @@ const PI: f64 = 3.141592;
 
 /// parses an NMEA string (degrees decimal minutes) such as "3953.4210" into (39, 53.4210) and
 /// then to 39 + 53.4210/60
-pub fn parse_nmea(s: &str) -> f64 {
-    let n: f64 = String::from(s).parse().unwrap();
-    ((n / 100_f64) as u32) as f64 + ((n % 100_f64) / 60_f64)
+pub fn parse_nmea(s: &str) -> Result<f64, String> {
+    match String::from(s).parse::<f64>() {
+        Ok(n)  => Ok(((n / 100_f64) as u32) as f64 + ((n % 100_f64) / 60_f64)),
+        Err(e) => Err(format!("Failed to parse: {}", e))
+    }
+}
+
+#[derive(Debug)]
+pub enum Direction {
+    North,
+    South,
+    East,
+    West
 }
 
 // represents a location in decimal degrees format
@@ -17,20 +27,35 @@ pub struct Location {
 }
 
 impl Location {
-    pub fn parse_nmea(lat: &str, lat_dir: &str, lon: &str, lon_dir: &str) -> Self {
-        Location {
-            lat: parse_nmea(lat) *
-                 match lat_dir {
-                "N" => 1_f64,
-                "S" => -1_f64,
-                _ => panic!("Invalid latitude direction"),
-            },
-            lon: parse_nmea(lon) *
-                 match lon_dir {
-                "E" => 1_f64,
-                "W" => -1_f64,
-                _ => panic!("Invalid longitude direction"),
-            },
+
+    pub fn parse_nmea(lat: &str, lat_dir: &str, lon: &str, lon_dir: &str) -> Result<Self, String> {
+
+        let lat_dir = try!(Location::parse_direction(lat_dir));
+        let lat_mult = try!(match lat_dir {
+            Direction::North => Ok(1_f64),
+            Direction::South => Ok(-1_f64),
+            _ => Err(format!("Invalid latitude direction {:?}", lat_dir))
+        });
+        let lat = try!(parse_nmea(lat)) * lat_mult;
+
+        let lon_dir = try!(Location::parse_direction(lon_dir));
+        let lon_mult = try!(match lon_dir {
+            Direction::East => Ok(1_f64),
+            Direction::West => Ok(-1_f64),
+            _ => Err(format!("Invalid longitude direction {:?}", lon_dir))
+        });
+        let lon = try!(parse_nmea(lon)) * lon_mult;
+
+        Ok(Location { lat: lat, lon: lon })
+    }
+
+    pub fn parse_direction(d: &str) -> Result<Direction, String> {
+        match d {
+            "N" => Ok(Direction::North),
+            "S" => Ok(Direction::South),
+            "E" => Ok(Direction::East),
+            "W" => Ok(Direction::West),
+            _ => Err(format!("Invalid direction '{}'", d))
         }
     }
 }
@@ -265,5 +290,5 @@ fn test_sparkfun_route_2() {
 
 #[test]
 fn test_parse_nmea() {
-    assert_eq!("101.6971", format!("{:.*}", 4, parse_nmea("10141.82531")));
+    assert_eq!("101.6971", format!("{:.*}", 4, parse_nmea("10141.82531").unwrap()));
 }
