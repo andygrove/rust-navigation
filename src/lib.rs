@@ -1,4 +1,5 @@
 extern crate rand;
+pub mod alvinxy;
 
 const PI: f64 = 3.141592;
 
@@ -20,7 +21,7 @@ pub enum Direction {
 }
 
 // represents a location in decimal degrees format
-#[derive(Debug)]
+#[derive(Debug,Clone,Copy)]
 pub struct Location {
     pub lat: f64,
     pub lon: f64,
