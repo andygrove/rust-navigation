@@ -1,12 +1,13 @@
 [package]
 name = "navigation"
 description = "Provides basic navigation between GPS waypoints"
-version = "0.1.7"
-authors = ["Andy Grove <andygrove73@gmail.com>"]
-homepage = "https://github.com/andygrove/rust-navigation"
-documentation = "https://github.com/andygrove/rust-navigation"
-repository = "https://github.com/andygrove/rust-navigation"
+version = "0.2.0"
+authors = ["Andy Grove <andygrove73@gmail.com>", "Christopher Moran <christophermoran@ucsb.edu>"]
+homepage = "https://github.com/ucsb-coast-lab/rust-navigation"
+documentation = "https://github.com/ucsb-coast-lab/rust-navigation"
+repository = "https://github.com/ucsb-coast-lab/rust-navigation"
 license = "MIT/Apache-2.0"
+edition = "2018"
 
 [dependencies]
-rand = "0.3.13"
+rand = "0.8"
