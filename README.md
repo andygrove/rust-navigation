@@ -36,3 +36,33 @@ let bearing = boulder.estimate_bearing_to(&dia); // results in 110.44
 (40.091311, -105.185128) -> (40.090946, -105.184925): bearing=157.0 estimate=156.9 diff=0.1 [OK]
 (40.091150, -105.185586) -> (40.091221, -105.185793): bearing=294.2 estimate=294.1 diff=0.1 [OK]
 ```
+
+## AlvinXY submodule
+
+The `alvinxy` submodule adds the ability to switch between a local and global coordinate frame according to the
+```
+Murphy, Chris & Singh, Hanumant. (2010). Rectilinear coordinate frames for Deep sea navigation. 2010 IEEE/OES Autonomous Underwater Vehicles, AUV 2010. 1 - 10. 10.1109/AUV.2010.5779654.`
+```
+
+### AlvinXY mission planning example
+
+A mission planned for a vehicle using this coordinate plan might look like the following, where the final GPS coordinates could be exported to a mission file or use directly by a control system. This implementation has been used for mission planning of an autonomous underwater vehicle in a freshwater reservoir.
+
+```
+fn main() {
+    let origin = Location::new(34.589,-119.96472);
+    // Writing the vehicle coordinate sequence and push them to vector
+    let mut wt_list: Vec<LocalCoor> = Vec::new();
+    let mut b = LocalCoor::new(-900.0,0.0);
+    let mut soff = LocalCoor::new(-900.,-100.);
+    let mut son = LocalCoor::new(-900.,100.);
+    wt_list.push(b);
+    wt_list.push(soff);
+    wt_list.push(son);
+
+    for wpt in &mut wt_list {
+        wpt.rotate_local(15.0);
+        println!("List of waypoints after rotation and conversion: {:?}",xy2latlon(*wpt,origin));
+    }
+}
+```
